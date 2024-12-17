@@ -4,7 +4,7 @@ from flask import Blueprint,request,redirect,render_template,jsonify
 
 from data.users import users
 from models.user import User
-
+import openpyxl
 user_controller = Blueprint("user", __name__)
 @user_controller.route("/get",methods=["GET"])
 def get_users():
@@ -13,11 +13,12 @@ def get_users():
 def get_user(id):
     user = None
     for u in users:
-        if u.id == id and isinstance(user,User):
+        if str(u.id).lower() == id.lower():
             user = u
     if user:
         return jsonify(user.__dict__)
-    return jsonify({"error": f"User with id {id} not found"}), 404
+    else:
+        return jsonify({"error": f"User with id {id} not found"}), 404
 
 @user_controller.route("/add",methods=["POST"])
 def add_user():
